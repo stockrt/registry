@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "hello_sub", "hello_sub.csproj", "{DB1FD81D-E835-4768-959E-40A95BCA3532}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "hello_pub", "hello_pub.csproj", "{327905D4-5CBA-4756-8770-5EDFC3DA1304}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DB1FD81D-E835-4768-959E-40A95BCA3532}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB1FD81D-E835-4768-959E-40A95BCA3532}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB1FD81D-E835-4768-959E-40A95BCA3532}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB1FD81D-E835-4768-959E-40A95BCA3532}.Release|Any CPU.Build.0 = Release|Any CPU
+		{327905D4-5CBA-4756-8770-5EDFC3DA1304}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{327905D4-5CBA-4756-8770-5EDFC3DA1304}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{327905D4-5CBA-4756-8770-5EDFC3DA1304}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{327905D4-5CBA-4756-8770-5EDFC3DA1304}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

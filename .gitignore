@@ -1,0 +1,34 @@
+# General
+*~
+*.log
+tmp
+dump
+
+# Eclipse
+.settings
+.cache
+.project
+.classpath
+.scala_dependencies
+bin
+
+# SBT
+dist
+project/boot
+project/target
+project/project
+project/plugins/target
+target
+.target
+
+# Play
+logs
+RUNNING_PID
+
+# Extra
+.DS_Store
+.history
+.idea
+*.iml
+out
+.idea_modules

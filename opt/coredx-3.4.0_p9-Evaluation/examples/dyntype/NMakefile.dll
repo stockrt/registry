@@ -1,0 +1,113 @@
+# ***************************************************************
+# 
+#   file:  NMakefile.dll
+#   desc:  Makefile for CoreDX example Dynamic types applications
+#  
+# ***************************************************************
+# 
+#    Coypright(C) 2009-2011 Twin Oaks Computing, Inc
+#    All rights reserved.   Castle Rock, CO 80108
+# 
+# ****************************************************************
+# 
+#   This file is provided by Twin Oaks Computing, Inc
+#   as an example. It is provided in the hope that it will be
+#   useful but WITHOUT ANY WARRANTY; without even the implied
+#   warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+#   PURPOSE. TOC Inc assumes no liability or responsibilty for
+#   the use of this information for any purpose.
+#   
+# ***************************************************************/
+
+##########################################################
+#
+# This Makefile uses the following environment variables:
+#  COREDX_TOP
+#  COREDX_HOST
+#  COREDX_TARGET
+# These variables can be set manually, or determined by
+# running the script  coredx/scripts/cdxenv.sh or cdxenv.bat
+#
+##########################################################
+
+# Define our sources and objects
+EXECUTABLE      = simplemsg_pub.exe dyntype_sub.exe
+
+# generated source code
+GENSRCS     = simplemsgTypeSupport.c simplemsgDataReader.c simplemsgDataWriter.c simplemsg.c
+GENHDRS     = simplemsgTypeSupport.h simplemsgDataReader.h simplemsgDataWriter.h simplemsg.h
+GENOBJS     = $(GENSRCS:.c=.obj)
+
+# Publisher sources and objects
+simplemsg_pub_CSRCS = simplemsg_pub.c
+simplemsg_pub_COBJS = $(simplemsg_pub_CSRCS:.c=.obj)
+simplemsg_pub_OBJS  = $(GENOBJS) $(simplemsg_pub_COBJS)
+
+# Subscriber sources and objects
+dyntype_sub_CSRCS = dyntype_sub.c
+dyntype_sub_COBJS = $(dyntype_sub_CSRCS:.c=.obj)
+dyntype_sub_OBJS  = $(dyntype_sub_COBJS)
+
+##########################################################
+# Setup Compile Environment
+# We assume both gcc and coredx_ddl are in your path!
+CC         = cl.exe
+DDL        = $(COREDX_TOP)\host\$(COREDX_HOST)\bin\coredx_ddl.exe
+
+INC_PATH   = -I$(COREDX_TOP)\target\include
+LIBS       = $(COREDX_TOP)\target\$(COREDX_TARGET)\lib\dds_dyntype.lib \
+	     $(COREDX_TOP)\target\$(COREDX_TARGET)\lib\dds_cf.lib \
+	     WS2_32.lib Iphlpapi.lib winmm.lib user32.lib gdi32.lib shell32.lib advapi32.lib 
+CFLAGS     = /nologo /MD $(INC_PATH) /DCOREDX_DLL 
+
+###########################################################
+# NOTE: 
+# The COREDX_DLL define ('/DCOREDX_DLL') is necessary for 
+# when compiling code that will link against the 'DLL' 
+# version of dds.lib
+#
+# If you want to link against the dynamic library, add the
+# /DCOREDX_DLL compile flag, and list 'dds.lib' 
+# instead of 'dds_static.lib'.
+#
+# [For now, the C++ library dds_cpp.lib requires the static
+#  library dds_static.lib]
+#
+##########################################################
+
+
+##########################################################
+# Rules for compiling
+
+all: $(EXECUTABLE) 
+
+simplemsg_pub.exe: $(simplemsg_pub_OBJS)
+	cl.exe /nologo /Fe$@ $** -link $(LIBS) 
+
+dyntype_sub.exe:  $(dyntype_sub_OBJS)
+	cl.exe /nologo /Fe$@ $** -link $(LIBS) 
+
+
+##########################################################
+# Rules for generating code from DDL
+
+$(GENSRCS) $(GENHDRS): simplemsg.ddl
+	$(DDL) -f $**
+
+##########################################################
+# Rules for cleaning
+
+clean:
+	del  $(simplemsg_pub_OBJS) $(dyntype_sub_OBJS) $(EXECUTABLE)
+
+reallyclean: clean
+	del $(GENSRCS) $(GENHDRS) 
+
+
+##########################################################
+# Additional dependencies
+simplemsg_pub.obj: simplemsg.h simplemsgTypeSupport.h simplemsgDataWriter.h
+simplemsgTypeSupport.obj: simplemsgTypeSupport.c simplemsg.h simplemsgTypeSupport.h
+simplemsgDataReader.obj: simplemsgDataReader.c simplemsg.h
+simplemsgDataWriter.obj: simplemsgDataWriter.c simplemsg.h
+simplemsg.obj: simplemsg.c simplemsg.h

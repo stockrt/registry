@@ -1,0 +1,7 @@
+- principais funcionalidades do serviço de middleware
+- sua arquitetura geral
+- operacões e seus parámetros (isto é, a API)
+- uso de outras tecnologias (p.ex. libs para criptografia, APIs da Google, etc.)
+- como usará o UDI e a ClientLib/GroupAPI
+- detalhamento dos tipos de mensagem a serem transmitidos entre clientes e
+  servidores envolvidos

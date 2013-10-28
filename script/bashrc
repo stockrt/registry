@@ -1,0 +1,15 @@
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+# User specific aliases and functions
+alias gateway="cd /home/lac/workspace/lib && java -Djava.library.path=$LD_LIBRARY_PATH:/home/lac/workspace/lib -jar /home/lac/workspace/lib/contextnet.jar"
+alias la="ls -la"
+
+export PLAY_OPTS="-Xms256m -Xmx256m"
+alias play='/home/$USER/play-2.2.0/play'
+alias registry='cd /home/$USER/workspace/RegistryWeb && play start'
+alias registry-dev='cd /home/$USER/workspace/RegistryWeb && play run'

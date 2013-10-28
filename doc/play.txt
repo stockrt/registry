@@ -1,0 +1,5 @@
+# Play at LinkedIn
+http://www.slideshare.net/brikis98/the-play-framework-at-linkedin
+
+# Request lifecycle and application architecture
+http://www.playframework.com/documentation/1.2/main

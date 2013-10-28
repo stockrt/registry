@@ -1,0 +1,116 @@
+# ***************************************************************
+# 
+#   file:  Makefile
+#   desc:  Makefile for CoreDX example ContentFilter examples
+#  
+# ***************************************************************
+# 
+#    Coypright(C) 2008-2011 Twin Oaks Computing, Inc
+#    All rights reserved.   Castle Rock, CO 80108
+# 
+# ****************************************************************
+# 
+#   This file is provided by Twin Oaks Computing, Inc
+#   as an example. It is provided in the hope that it will be 
+#   useful but WITHOUT ANY WARRANTY; without even the implied 
+#   warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+#   PURPOSE. TOC Inc assumes no liability or responsibilty for 
+#   the use of this information for any purpose.
+#   
+# ***************************************************************/
+
+##########################################################
+#
+# This Makefile uses the following environment variables:
+#  COREDX_TOP
+#  COREDX_HOST
+#  COREDX_TARGET
+# These variables can be set manually, or determined by
+# running the script  coredx/scripts/cdxenv.sh or cdxenv.bat
+#
+##########################################################
+
+
+# Define our sources and objects
+EXECUTABLE      = filter_pub filter_sub
+
+# Publisher sources and objects
+filter_pub_CSRCS = filter_pub.c
+filter_pub_COBJS = ${filter_pub_CSRCS:.c=.o}
+
+filter_pub_GENSRCS     = filterTypeSupport.c filterDataWriter.c filter.c
+filter_pub_GENHDRS     = filterTypeSupport.h filterDataWriter.h filter.h
+filter_pub_GENOBJS     = ${filter_pub_GENSRCS:.c=.o}
+
+filter_pub_OBJS = ${filter_pub_GENOBJS} ${filter_pub_COBJS} 
+
+# Subscriber sources and objects
+filter_sub_CSRCS = filter_sub.c
+filter_sub_COBJS = ${filter_sub_CSRCS:.c=.o}
+
+filter_sub_GENSRCS     = filterTypeSupport.c filterDataReader.c filter.c
+filter_sub_GENHDRS     = filterTypeSupport.h filterDataReader.h filter.h
+filter_sub_GENOBJS     = ${filter_sub_GENSRCS:.c=.o}
+
+filter_sub_OBJS = ${filter_sub_GENOBJS} ${filter_sub_COBJS}
+
+##########################################################
+# Setup Compile Environment
+# We assume both gcc and coredx_ddl are in your path!
+
+CC         = gcc
+DDL        = ${COREDX_TOP}/host/${COREDX_HOST}/bin/coredx_ddl
+
+INC_PATH   = -I${COREDX_TOP}/target/include
+LIB_PATH   = -L${COREDX_TOP}/target/${COREDX_TARGET}/lib
+LIBS       = -Wl,-Bstatic -ldds_cf -Wl,-Bdynamic 
+
+CFLAGS     = -Wall -O2 -g ${INC_PATH} 
+LDFLAGS    = ${LIB_PATH} ${LIBS} -lnsl -lrt
+
+##########################################################
+# Rules for compiling
+
+all: ${EXECUTABLE} 
+
+filter_pub: ${filter_pub_GENSRCS} ${filter_pub_OBJS}
+	${CC} -o $@ ${filter_pub_OBJS} ${LDFLAGS} 
+
+filter_sub: ${filter_sub_GENSRCS} ${filter_sub_OBJS}
+	${CC} -o $@ ${filter_sub_OBJS} ${LDFLAGS} 
+
+
+##########################################################
+# Rules for generating code from DDL
+
+%.c : %.ddl
+	${DDL} -f $<
+
+%TypeSupport.c :%.ddl
+	${DDL} -f $<
+
+%DataWriter.c :%.ddl
+	${DDL} -f $<
+
+%DataReader.c :%.ddl
+	${DDL} -f $<
+
+
+##########################################################
+# Rules for cleaning
+
+clean:
+	\rm -f ${filter_pub_OBJS} ${filter_sub_OBJS} ${EXECUTABLE}
+
+reallyclean: clean
+	\rm -f ${filter_pub_GENSRCS} ${filter_pub_GENHDRS} ${filter_sub_GENSRCS} ${filter_sub_GENHDRS}
+
+
+##########################################################
+# Additional dependencies
+filter_pub.o: filter.h filterTypeSupport.h filterDataWriter.h
+filter_sub.o: filter.h filterTypeSupport.h filterDataReader.h
+filterTypeSupport.o: filterTypeSupport.c filter.h filterTypeSupport.h
+filterDataReader.o: filterDataReader.c filter.h
+filterDataWriter.o: filterDataWriter.c filter.h
+filter.o: filter.c filter.h

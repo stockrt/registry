@@ -1,0 +1,132 @@
+# ***************************************************************
+# 
+#   file:  Makefile.solaris
+#   desc:  Makefile for CoreDX latency test application
+#  
+# ***************************************************************
+# 
+#    Coypright(C) 2009-2011 Twin Oaks Computing, Inc
+#    All rights reserved.   Castle Rock, CO 80108
+# 
+# ****************************************************************
+# 
+#   This file is provided by Twin Oaks Computing, Inc
+#   as an example. It is provided in the hope that it will be 
+#   useful but WITHOUT ANY WARRANTY; without even the implied 
+#   warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+#   PURPOSE. TOC Inc assumes no liability or responsibilty for 
+#   the use of this information for any purpose.
+#   
+# ***************************************************************/
+
+##########################################################
+#
+# This Makefile uses the following environment variables:
+#  COREDX_TOP
+#  COREDX_HOST
+#  COREDX_TARGET
+# These variables can be set manually, or determined by
+# running the script  coredx/scripts/cdxenv.sh or cdxenv.bat
+#
+##########################################################
+
+# Define our sources and objects
+C_EXECUTABLE      = latency_test_c
+CPP_EXECUTABLE    = latency_test_cpp
+
+# Source files
+latency_CSRCS     = main.c
+latency_COBJS     = ${latency_CSRCS:.c=.o}
+
+latency_CCSRCS    = maincpp.cc
+latency_CCOBJS    = ${latency_CCSRCS:.cc=.o}
+
+# Generated code
+latency_GENCSRCS  = latency.c latencyTypeSupport.c latencyDataReader.c latencyDataWriter.c
+latency_GENCHDRS  = latency.h latencyDataReader.h latencyDataWriter.h latencyTypeSupport.h
+latency_GENCOBJS  = ${latency_GENCSRCS:.c=.o}
+
+latency_GENCCSRCS = latencycpp.cc latencycppTypeSupport.cc latencycppDataReader.cc latencycppDataWriter.cc
+latency_GENCCHDRS = latencycpp.hh latencycppDataReader.hh latencycppDataWriter.hh latencycppTypeSupport.hh
+latency_GENCCOBJS = ${latency_GENCCSRCS:.cc=.o}
+
+# Put it all together
+latency_ALLCOBJS  = ${latency_GENCOBJS} ${latency_COBJS}
+latency_ALLCCOBJS = ${latency_GENCCOBJS} ${latency_CCOBJS}
+
+##########################################################
+# Setup Compile Environment
+# We assume gcc is in your path!
+
+CC       = gcc
+CCC      = g++
+DDL      = ${COREDX_TOP}/host/${COREDX_HOST}/bin/coredx_ddl
+INC_PATH = -I${COREDX_TOP}/target/include
+LIB_PATH = -L${COREDX_TOP}/target/${COREDX_TARGET}/lib
+C_LIBS   = -Wl,-Bstatic -ldds -Wl,-Bdynamic
+CPP_LIBS = -Wl,-Bstatic -ldds_cpp -ldds -Wl,-Bdynamic
+
+CFLAGS     = -Wall -O2 ${INC_PATH}
+CCFLAGS    = -Wall -O2 ${INC_PATH}
+CXXFLAGS   = ${CCFLAGS}
+LDFLAGS    = ${LIB_PATH} ${C_LIBS}     -lsocket -ldl -lm -lnsl -lrt
+CCCLDFLAGS = ${LIB_PATH} ${CPP_LIBS} -lsocket -ldl -lm -lnsl -lrt
+
+##########################################################
+# Rules for compiling
+
+all: ${C_EXECUTABLE}  ${CPP_EXECUTABLE}
+
+${C_EXECUTABLE}: ${latency_GENCSRCS} ${latency_ALLCOBJS}
+	${CC} -o $@ ${latency_ALLCOBJS} ${LDFLAGS} 
+
+${CPP_EXECUTABLE}: ${latency_GENCCSRCS} ${latency_ALLCCOBJS}
+	${CCC} -o $@ ${latency_ALLCCOBJS} ${CCCLDFLAGS} 
+
+##########################################################
+# Rules for generating code from IDL
+
+%.c :%.ddl
+	${DDL} -f $<
+
+%TypeSupport.c :%.ddl
+	${DDL} -f $<
+
+%DataWriter.c :%.ddl
+	${DDL} -f $<
+
+%DataReader.c :%.ddl
+	${DDL} -f $<
+
+%cpp.cc :%.ddl
+	${DDL} -b latencycpp -l cpp -f $<
+
+%cppTypeSupport.cc :%.ddl
+	${DDL} -b latencycpp -l cpp -f $<
+
+%cppDataWriter.cc :%.ddl
+	${DDL} -b latencycpp -l cpp -f $<
+
+%cppDataReader.cc :%.ddl
+	${DDL} -b latencycpp -l cpp -f $<
+
+##########################################################
+# Rules for cleaning
+clean:
+	\rm -f ${latency_ALLCOBJS} ${latency_ALLCCOBJS} ${C_EXECUTABLE} ${CPP_EXECUTABLE}
+
+reallyclean: clean
+	\rm -f ${latency_GENCSRCS} ${latency_GENCHDRS} ${latency_GENCCSRCS} ${latency_GENCCHDRS}
+
+##########################################################
+# Additional dependencies
+main.o:               ${latency_GENCHDRS} main.c
+latency.o:            ${latency_GENCHDRS} latency.c
+latencyTypeSupport.o: ${latency_GENCHDRS} latencyTypeSupport.c
+latencyDataReader.o:  ${latency_GENCHDRS} latencyDataReader.c
+latencyDataWriter.o:  ${latency_GENCHDRS} latencyDataWriter.c
+maincpp.o:            ${latency_GENCHDRS} maincpp.cc
+latencycpp.o:            ${latency_GENCCHDRS} latencycpp.cc
+latencycppTypeSupport.o: ${latency_GENCCHDRS} latencycppTypeSupport.cc
+latencycppDataReader.o:  ${latency_GENCCHDRS} latencycppDataReader.cc
+latencycppDataWriter.o:  ${latency_GENCCHDRS} latencycppDataWriter.cc
