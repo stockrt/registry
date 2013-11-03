@@ -1,6 +1,6 @@
 import play.Project._
 
-name := "RegistryWeb"
+name := "Registry"
 
 version := "1.0"
 
