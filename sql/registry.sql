@@ -1,5 +1,0 @@
-USE mysql;
-DELETE FROM user WHERE user='';
-CREATE DATABASE IF NOT EXISTS registry;
-GRANT ALL PRIVILEGES ON registry.* TO 'registry'@'%' IDENTIFIED BY 'registry';
-FLUSH PRIVILEGES;
