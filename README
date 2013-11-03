@@ -20,12 +20,8 @@ Ao ser recriada, a VM será totalmente reconfigurada:
     vagrant reload
     vagrant provision
 
-* NOTA: A VM se destina à execução do código, e não ao processo de
-edição/desenvolvimento. Portanto, não edite arquivos pela VM, usa ela apenas
-como servidor headless (sem interface gráfica) para rodar o Gateway, o Core
-Server e o Web Server. Use a pasta /vagrant na VM como ponto de troca de
-arquivos entre o host e a VM. A raiz do repositório é o diretório local (host)
-e o /vagrant é o diretório remoto (VM).
+* NOTA: A VM se destina à execução do código, e não ao processo de edição/desenvolvimento. Portanto, não edite arquivos pela VM, usa ela apenas como servidor headless (sem interface gráfica) para rodar o Gateway, o Core Server e o Web Server.
+Use a pasta /vagrant na VM como ponto de troca de arquivos entre o host e a VM. A raiz do repositório é o diretório local (host) e o /vagrant é o diretório remoto (VM).
 
 Para acessar a VM:
     vagrant ssh
@@ -41,12 +37,9 @@ A interface Registry Web Console ficará acessível em:
     ou
     http://10.10.10.10
 
-
 # Explorando o projeto Registry no Eclipse
 
-Para utilizar o repositório no Eclipse e contribuir com o Registry você
-precisará rodar um script com o Play Framework que irá preparar o diretório
-Registry para ser usado como workspace no Eclipse.
+Para utilizar o repositório no Eclipse e contribuir com o Registry você precisará rodar um script com o Play Framework que irá preparar o diretório Registry para ser usado como workspace no Eclipse.
 
 - Entre no diretório de script e rode o eclipsify:
     cd script
@@ -56,10 +49,8 @@ Registry para ser usado como workspace no Eclipse.
     sudo script/java-dl.sh
 
 A variável de ambiente JAVA_HOME deve estar exportada para um Java versão 7.
-A variável de ambiente PATH deve dar preferência de load para
-$JAVA_HOME/bin:$PATH para que os comandos java e javac executem a versão 7.
+A variável de ambiente PATH deve dar preferência de load para $JAVA_HOME/bin:$PATH para que os comandos java e javac executem a versão 7.
     export JAVA_HOME="/opt/java"
     export PATH="$JAVA_HOME/bin:$PATH"
 
-Recomenda-se importar para o workspace sem copiar, assim os updates com git pull
-ficam disponíveis de imediato no ambiente do Eclipse.
+Recomenda-se importar para o workspace sem copiar, assim os updates com git pull ficam disponíveis de imediato no ambiente do Eclipse.
