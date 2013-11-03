@@ -63,7 +63,7 @@ curl \
 
 
 # Update node
-# PUT /api/nodes/:uuid_namee
+# PUT /api/nodes/:uuid_name
 
 # Atualiza o node teste pelo name
 curl \
