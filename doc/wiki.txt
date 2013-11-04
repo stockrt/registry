@@ -1,7 +1,7 @@
 ====== Registry Service ======
 Mobile nodes Registry service, offering a RegistryCoreServer to talk with mobile clients, a Web Console interface to manage nodes with a web browser, and a REST API to exchange JSON data with other servers or clients.
 
-The main objective of this service is to provide UUID to label mapping and vice-versa. This way you can map long and near-to-impossible to remember UUID strings to friendly names like an e-mail, a car plate, a proper name or any other type of label you need.
+The main objective of this service is to provide UUID to label mapping and vice-versa. This way you can map long and near-to-impossible to remember UUID strings to friendly names like an e-mail, a car plate, a proper noun, nickname, username or any other label you need.
 
 ===== Architecture =====
 ----
