@@ -23,6 +23,24 @@ iptables -Z -t nat
 iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 9000
 
 source /config.sh
+
+echo
+flag_wait=0
+echo "- Aguardando $REGISTRY_HOME/provision..."
+while true
+do
+    if [[ -d "$REGISTRY_HOME/provision" ]]; then break; fi
+    flag_wait=1
+    echo -n "."
+    sleep 0.5
+done
+if [[ $flag_wait -eq 1 ]]
+then
+    echo
+fi
+echo "- Pronto!"
+sleep 2
+
 su - $USER_APP -c "bash $REGISTRY_HOME/provision/gateway.sh &"
 su - $USER_APP -c "bash $REGISTRY_HOME/provision/registry-server.sh -DapplyEvolutions.default=true start &"
 
