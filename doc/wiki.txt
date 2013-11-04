@@ -40,6 +40,8 @@ REST API services HTTP clients and helps them to manage nodes in the database fr
   * ''DELETE /api/nodes/:uuid_name'' Delete node
 
 <file bash api-client.sh>
+#!/bin/bash
+
 export registry_host="registry.vm"
 
 # Create node
