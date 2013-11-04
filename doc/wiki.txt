@@ -1,0 +1,262 @@
+====== Registry Service ======
+Mobile nodes Registry service, offering a RegistryCoreServer to talk with mobile clients, a Web Console interface to manage nodes with a web browser, and a REST API to exchange JSON data with other servers or clients.
+
+The main objective of this service is to provide UUID to label mapping and vice-versa. This way you can map long and near-to-impossible to remember UUID strings to friendly names like an e-mail, a car plate, a proper name or any other type of label you need.
+
+===== Architecture =====
+----
+
+  * Here is the simple architecture of the Registry service.
+{{ ::registry_architecture.png?600 |}}
+
+===== Screenshots =====
+Web Console Interface screenshots for basic Admin operations. This is a CRUD interface.
+
+CRUD stands for Create, Retrieve, Update, Delete (as in managing objects/entries in a database with a simple user interface, usually web based).
+
+----
+
+  * Adding a node.
+{{ ::registrywebconsole_add.png?200 |}}
+
+----
+
+  * Editing a node.
+{{ ::registrywebconsole_edit.png?400 |}}
+
+----
+
+  * Listing nodes.
+{{ ::registrywebconsole_list.png?600 |}}
+
+===== REST API =====
+REST API services HTTP clients and helps them to manage nodes in the database from outside the Java server or client code, by making HTTP calls to predefined service routes.
+
+  * ''POST /api/nodes'' Create node
+  * ''GET /api/nodes/:uuid_name'' Retrieve node
+  * ''GET /api/nodes'' Nodes list
+  * ''GET /api/nodes/search/:uuid_name'' Search nodes
+  * ''PUT /api/nodes/:uuid_name'' Update node
+  * ''DELETE /api/nodes/:uuid_name'' Delete node
+
+<file bash api-client.sh>
+export registry_host="registry.vm"
+
+# Create node
+# POST /api/nodes
+
+curl \
+  --header 'Content-type: application/json' \
+  --request POST \
+  --data '{"uuid":"1234","name":"mynode","info":"some_data"}' \
+  http://$registry_host/api/nodes
+
+# Retrieve node
+# GET /api/nodes/:uuid_name
+
+curl \
+  --request GET \
+  http://$registry_host/api/nodes/mynode
+
+# Nodes list
+# GET /api/nodes
+
+curl \
+  --request GET \
+  http://$registry_host/api/nodes
+
+# Search nodes
+# GET /api/nodes/search/:uuid_name
+
+curl \
+  --request GET \
+  http://$registry_host/api/nodes/search/myn
+
+# Update node
+# PUT /api/nodes/:uuid_name
+
+curl \
+  --header 'Content-type: application/json' \
+  --request PUT \
+  --data '{"uuid":"1234","name":"mynode","info":"some_other_data"}' \
+  http://$registry_host/api/nodes/mynode
+
+# Delete node
+# DELETE /api/nodes/:uuid_name
+
+curl \
+  --request DELETE \
+  http://$registry_host/api/nodes/mynode
+</file>
+
+More REST API usage samples can be found in the [[https://github.com/stockrt/registry/blob/master/Registry/README|Registry/README]] file.
+
+===== CrudLib API =====
+CrudLib helps you to manage nodes in the database from inside the core server.
+
+  * ''CrudLib.addNode(JsonNode json)'' Create node
+  * ''CrudLib.getNode(String uuid_name)'' Retrieve node
+  * ''CrudLib.lstNodes()'' Nodes list
+  * ''CrudLib.srchNodes(String uuid_name)'' Search nodes
+  * ''CrudLib.updNode(String uuid_name, JsonNode json)'' Update node
+  * ''CrudLib.delNode(String uuid_name)'' Delete node
+
+<file java SnippetServer.java>
+// This sample is only a snippet, the complete code for a server can be found in the Registry service repository.
+
+import crublib.CrudLib;
+
+CrudLib.addNode(Json.parse(requestMessage.getPayload()));
+
+CrudLib.getNode(requestMessage.getPayload());
+
+CrudLib.lstNodes();
+
+CrudLib.srchNodes(requestMessage.getPayload());
+
+CrudLib.updNode(requestMessage.getPayload(), Json.parse(requestMessage.getPayload()));
+
+CrudLib.delNode(requestMessage.getPayload());
+</file>
+
+Complete CrudLib usage can be found in the [[https://github.com/stockrt/registry/blob/master/Registry/app/br/pucrio/inf/lac/registry/RegistryCoreServer.java|RegistryCoreServer.java]] file.
+
+===== RequestInfo and ResponseInfo API =====
+Handling RequestInfo and ResponseInfo objects any mobile client can interact with the Registry service and call all the methods available in the core server, just like we can do in the REST API or CrudLib.
+
+RequestInfo and ResponseInfo basically have two attributes: type and payload, both set in the constructor.
+
+  * ''private UUID _uuid;'' Is set with sender's UUID
+  * ''private String _type;'' Is set with the desired method, documented bellow
+  * ''private String _payload;'' Is set with additional request/response data, usually JSON data
+
+RequestInfo and ResponseInfo types.
+
+  * ''addNode'' Create node
+  * ''getNode'' Retrieve node
+  * ''lstNodes'' Nodes list
+  * ''srchNodes'' Search nodes
+  * ''updNode'' Update node
+  * ''delNode'' Delete node
+
+<file java SnippetClient.java>
+// This sample is only a snippet, the complete code for a client can be found in the Registry service repository.
+
+import modellibrary.RequestInfo;
+import modellibrary.ResponseInfo;
+
+public class RegistryCoreClient implements NodeConnectionListener {
+    @Override
+    public void connected(NodeConnection remoteCon) {
+        // REQUEST send
+        JSONObject xresult = new JSONObject();
+        JSONObject xinfo = new JSONObject();
+
+        try {
+            xresult.put("uuid", "987654321");
+            xresult.put("name", "mynode");
+            xinfo.put("email", "mynode@example.com");
+            xinfo.put("city", "Rio de Janeiro");
+            xinfo.put("phone", "555-555-555");
+            xinfo.put("birthday", "01/01/1970");
+            xinfo.put("pass", "password");
+            xresult.put("info", xinfo.toString());
+        } catch (JSONException e1) {
+            e1.printStackTrace();
+        }
+
+        ApplicationMessage appMessage4 = new ApplicationMessage();
+        RequestInfo requestMessage4 = new RequestInfo(
+                appMessage4.getSenderID(), "addNode", xresult.toString());
+        appMessage4.setContentObject(requestMessage4);
+        try {
+            remoteCon.sendMessage(appMessage4);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ApplicationMessage appMessage1 = new ApplicationMessage();
+        RequestInfo requestMessage1 = new RequestInfo(
+                appMessage1.getSenderID(), "lstNodes", "");
+        appMessage1.setContentObject(requestMessage1);
+        try {
+            remoteCon.sendMessage(appMessage1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ApplicationMessage appMessage2 = new ApplicationMessage();
+        RequestInfo requestMessage2 = new RequestInfo(
+                appMessage2.getSenderID(), "srchNodes", "myn");
+        appMessage2.setContentObject(requestMessage2);
+        try {
+            remoteCon.sendMessage(appMessage2);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ApplicationMessage appMessage3 = new ApplicationMessage();
+        RequestInfo requestMessage3 = new RequestInfo(
+                appMessage3.getSenderID(), "getNode", "mynode");
+        appMessage3.setContentObject(requestMessage3);
+        try {
+            remoteCon.sendMessage(appMessage3);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ApplicationMessage appMessage5 = new ApplicationMessage();
+        RequestInfo requestMessage5 = new RequestInfo(
+                appMessage5.getSenderID(), "delNode", "mynode");
+        appMessage5.setContentObject(requestMessage5);
+        try {
+            remoteCon.sendMessage(appMessage5);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void newMessageReceived(NodeConnection remoteCon, Message message) {
+        String className = message.getContentObject().getClass()
+                .getCanonicalName();
+
+        if (className != null) {
+            // RESPONSE recv
+            if (className.equals(ResponseInfo.class.getCanonicalName())) {
+                ResponseInfo responseMessage = (ResponseInfo) Serialization
+                        .fromJavaByteStream(message.getContent());
+                System.out.println("[RegistryCoreClient] Response type: "
+                        + responseMessage.getType() + " | payload: "
+                        + responseMessage.getPayload());
+            } else {
+                System.out
+                        .println("[RegistryCoreClient] Objeto desconhecido recebido do servidor: "
+                                + className);
+            }
+        }
+    }
+}
+</file>
+
+Complete RequestInfo and ResponseInfo usage sample can be found in the [[https://github.com/stockrt/registry/blob/master/Registry/app/br/pucrio/inf/lac/registry/RegistryCoreClient.java|RegistryCoreClient.java]] file.
+
+===== Trying it out =====
+We have made available a VM that is prepared to run Registry services (Core, Web and REST). With just a few commands you will be ready to test the service. You will need:
+
+  * [[https://www.virtualbox.org|Virtualbox]] and [[http://www.vagrantup.com|Vagrant]] installed in your machine;
+  * A copy of the [[https://github.com/stockrt/registry|repository]] (a git clone);
+  * Run this: vagrant up;
+  * Wait a few minutes, and you should be set.
+
+With the automated Vagrant setup all the process of setting up the project, installing the server OS (Linux Ubuntu), installing and configuring dependencies like Java, Play Framework, MySQL, DB migrations/evolutions and CoreDX DDS, as well as ContextNet's libraries and Gateway, all of this is taken care for you and can be repeated as many times as you need to rebuild the entire system to test new versions from scratch.
+
+In the [[https://github.com/stockrt/registry/blob/master/README|README]] file you can find more detailed information on how to run the VM. Just keep in mind that this VM was meant to test and run the code (it is a headless server), not to edit or develop. For developing you should visit the [[download|Download]] page to grab a copy of the LAC's ContextNet VM with Eclipse and samples already set for you.
+
+===== Repository =====
+Source code and VM setup are available at [[https://github.com/stockrt/registry|Github]]
+
+===== Contact =====
+  * Rogério Schneider: rschneider@inf.puc-rio.br (Registry server)
+  * André Mac Dowell: andremacdowell@gmail.com (Android Registry client)
+  * Ivan Xavier Araújo de Lima: ivan.xavier@gmail.com (Auth server)
