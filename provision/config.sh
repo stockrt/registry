@@ -8,7 +8,10 @@ export PATH="$JAVA_HOME/bin:$PATH"
 export PLAY_OPTS="-Xms256m -Xmx256m -Djava.library.path=$LIBRARY_PATH"
 
 # Core
-export LD_PRELOAD="$REGISTRY_HOME/provision/lib64/libmacspoof.so.1.0.1"
-export TLM_LICENSE="$REGISTRY_HOME/provision/coredx/coredx.lic"
-mac="$(grep LICENSE $TLM_LICENSE | egrep -o 'HOSTID=[[:alnum:]]* ' | cut -d = -f 2)"
-export MAC_ADDRESS="${mac:0:2}:${mac:2:2}:${mac:4:2}:${mac:6:2}:${mac:8:2}:${mac:10:2}"
+if [[ -d "$REGISTRY_HOME/provision" ]]
+then
+    export LD_PRELOAD="$REGISTRY_HOME/provision/lib64/libmacspoof.so.1.0.1"
+    export TLM_LICENSE="$REGISTRY_HOME/provision/coredx/coredx.lic"
+    mac="$(grep LICENSE $TLM_LICENSE | egrep -o 'HOSTID=[[:alnum:]]* ' | cut -d = -f 2)"
+    export MAC_ADDRESS="${mac:0:2}:${mac:2:2}:${mac:4:2}:${mac:6:2}:${mac:8:2}:${mac:10:2}"
+fi
