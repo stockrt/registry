@@ -120,7 +120,7 @@ do
 done
 
 # Done
-sleep 5
+sleep 5 # Aguardar alguns segundos devido ao bind
 echo
 if [[ $flag_ok -eq 1 ]]
 then
