@@ -55,7 +55,6 @@ echo "- Instalando MySQL..."
 sudo debconf-set-selections <<< "mysql-server-<version> mysql-server/root_password password registry"
 sudo debconf-set-selections <<< "mysql-server-<version> mysql-server/root_password_again password registry"
 apt-get -y install mysql-server-5.5
-service mysql restart
 mysql --password=registry < $REGISTRY_HOME/provision/sql/registry_grant.sql
 
 # CoreDX

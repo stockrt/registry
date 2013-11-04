@@ -14,8 +14,6 @@
 # Make sure eth0 is working. This works around Vagrant issue #391
 dhclient eth0 >/dev/null 2>&1
 
-service mysql restart
-
 iptables -F
 iptables -X
 iptables -Z
