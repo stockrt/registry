@@ -32,6 +32,7 @@ echo "play clean-all"
 $HOME/play-$PLAY_VERSION/play clean-all
 echo "play eclipse"
 $HOME/play-$PLAY_VERSION/play eclipse
+echo "- Pronto!"
 
 echo
 echo "#######################################################################"
@@ -42,3 +43,5 @@ echo "Certifique-se de ter um Java versão 7 instalado.
 Recomenda-se importar para o workspace sem copiar, assim os updates com git pull
 ficam disponíveis de imediato no ambiente do Eclipse."
 echo "#######################################################################"
+echo
+echo "- Path a ser importado (sem copiar) para o workspace do Eclispe: $(pwd)"
