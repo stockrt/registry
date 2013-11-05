@@ -102,7 +102,7 @@ echo "- Aguarde enquanto são executados:
 E então tente acessar: http://registry.vm"
 
 # Wait
-timeout=120
+timeout=180
 wtime=0
 echo
 echo "- Aguardando start dos processos por até $timeout segundos..."
