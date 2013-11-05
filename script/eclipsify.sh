@@ -45,4 +45,5 @@ Recomenda-se importar para o workspace sem copiar, assim os updates com git pull
 ficam disponíveis de imediato no ambiente do Eclipse."
 echo "#######################################################################"
 echo
-echo "- Path a ser importado (sem copiar) para o workspace do Eclispe: $(pwd)"
+echo "- Path a ser importado (sem copiar) para o workspace do Eclispe:"
+pwd
