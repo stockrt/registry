@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# Exit on command errors.
-set -e
-# Exit on variable expansion errors.
-set -u
-
 JAVA_VER="7"
 JAVA_REL="0"
 JAVA_UPD="45"
