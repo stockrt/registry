@@ -32,6 +32,7 @@ echo "play clean-all"
 $HOME/play-$PLAY_VERSION/play clean-all
 echo "play eclipse"
 $HOME/play-$PLAY_VERSION/play eclipse
+echo
 echo "- Pronto!"
 
 echo
