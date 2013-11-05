@@ -61,3 +61,4 @@ then
 else
     open $JAVA_BINS
 fi
+echo "- Done!"
