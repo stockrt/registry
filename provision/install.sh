@@ -117,7 +117,6 @@ echo "- Pronto!"
 echo
 echo "- Executando rc.local..."
 /etc/rc.local
-echo "- Pronto!"
 
 # Message
 echo
