@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ "$HOSTNAME" != "registry" ]]
+if [[ "$HOSTNAME" != "registry" && "$1" != "-f" ]]
 then
     echo "You must run this script on the VM, not in your host."
     exit
