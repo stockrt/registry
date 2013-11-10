@@ -26,7 +26,7 @@ source /config.sh
 
 echo
 flag_wait=0
-echo "- Aguardando $REGISTRY_HOME/provision..."
+echo "- Aguardando diretório $REGISTRY_HOME/provision..."
 while true
 do
     if [[ -d "$REGISTRY_HOME/provision" ]]; then break; fi
