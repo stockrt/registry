@@ -39,6 +39,7 @@ then
     echo "Diretório home do projeto não foi encontrado: $REGISTRY_HOME" 1>&2
     exit
 fi
+
 if [[ ! -d "$USER_HOME" ]]
 then
     echo "Diretório home do usuário do projeto ($USER_APP) não foi encontrado: $USER_HOME" 1>&2
@@ -53,6 +54,7 @@ echo "export USER_APP=\"$USER_APP\"" >> /config.sh
 echo "export USER_HOME=\"$USER_HOME\"" >> /config.sh
 echo >> /config.sh
 cat $REGISTRY_HOME/provision/config.sh >> /config.sh
+echo "- Pronto!"
 
 # Pacotes
 echo
@@ -63,6 +65,7 @@ dpkg --configure -a
 apt-get -y update
 apt-get -y install build-essential linux-headers-$(uname -r)
 apt-get -y install curl zip unzip
+echo "- Pronto!"
 
 # MySQL
 echo
@@ -71,6 +74,7 @@ sudo debconf-set-selections <<< "mysql-server-<version> mysql-server/root_passwo
 sudo debconf-set-selections <<< "mysql-server-<version> mysql-server/root_password_again password registry"
 apt-get -y install mysql-server-5.5
 mysql --password=registry < $REGISTRY_HOME/provision/sql/registry_grant.sql
+echo "- Pronto!"
 
 # CoreDX
 echo
@@ -78,12 +82,14 @@ echo "- Instalando CoreDX..."
 echo "$COREDX_PKG"
 mkdir -p /opt/coredx
 tar xzf $REGISTRY_HOME/provision/coredx/$COREDX_PKG -C /opt/coredx/
+echo "- Pronto!"
 
 # Java
 echo
 echo "- Instalando Java..."
 $REGISTRY_HOME/script/java-dl.sh >/dev/null 2>&1
 chown -R ${USER_APP}: /opt/jdk*
+echo "- Pronto!"
 
 # Play
 echo
@@ -92,22 +98,26 @@ cd $USER_HOME
 wget -q -c http://downloads.typesafe.com/play/$PLAY_VERSION/play-${PLAY_VERSION}.zip
 echo A | unzip -q play-${PLAY_VERSION}.zip >/dev/null 2>&1
 chown -R ${USER_APP}: play*
+echo "- Pronto!"
 
 # Aliases
 echo
 echo "- Instalando Aliases..."
 cat $REGISTRY_HOME/provision/bashrc > $USER_HOME/.bashrc
+echo "- Pronto!"
 
 # rc.local set
 echo
 echo "- Instalando rc.local..."
 cat $REGISTRY_HOME/provision/rc.local > /etc/rc.local
 chmod 755 /etc/rc.local
+echo "- Pronto!"
 
 # rc.local run
 echo
 echo "- Executando rc.local..."
 /etc/rc.local
+echo "- Pronto!"
 
 # Message
 echo
