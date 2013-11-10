@@ -12,7 +12,7 @@
 # By default this script does nothing.
 
 # Make sure eth0 is working. This works around Vagrant issue #391
-dhclient eth0 >/dev/null 2>&1
+dhclient eth0 >/dev/null 2>&1 &
 
 iptables -F
 iptables -X
