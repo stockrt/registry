@@ -15,10 +15,24 @@ fi
 # Config
 echo
 echo "- Configurando sistema..."
+CORE_VERSION="3.5.16"
 PLAY_VERSION="2.2.0"
 REGISTRY_HOME=${REGISTRY_HOME:-"/vagrant"}
 USER_APP=${USER_APP:-"vagrant"}
 USER_HOME=${USER_HOME:-"/home/$USER_APP"}
+echo "CORE_VERSION=\"$CORE_VERSION\""
+echo "PLAY_VERSION=\"$PLAY_VERSION\""
+echo "REGISTRY_HOME=\"$REGISTRY_HOME\""
+echo "USER_APP=\"$USER_APP\""
+echo "USER_HOME=\"$USER_HOME\""
+
+# 64 or 32 bits?
+if [[ "$(uname -m)" == "x86_64" ]]
+then
+    COREDX_PKG="coredx-$CORE_VERSION-Linux_2.6_x86_64_gcc43-Evaluation.tgz"
+else
+    COREDX_PKG="coredx-$CORE_VERSION-Linux_2.6_x86_gcc43-Evaluation.tgz"
+fi
 
 if [[ ! -d "$REGISTRY_HOME" ]]
 then
@@ -32,6 +46,7 @@ then
 fi
 
 echo "# Config" > /config.sh
+echo "export CORE_VERSION=\"$CORE_VERSION\"" >> /config.sh
 echo "export PLAY_VERSION=\"$PLAY_VERSION\"" >> /config.sh
 echo "export REGISTRY_HOME=\"$REGISTRY_HOME\"" >> /config.sh
 echo "export USER_APP=\"$USER_APP\"" >> /config.sh
@@ -60,8 +75,9 @@ mysql --password=registry < $REGISTRY_HOME/provision/sql/registry_grant.sql
 # CoreDX
 echo
 echo "- Instalando CoreDX..."
+echo "$COREDX_PKG"
 mkdir -p /opt/coredx
-tar xzf $REGISTRY_HOME/provision/coredx/coredx-3.5.16-Linux_2.6_x86_64_gcc43-Evaluation.tgz -C /opt/coredx/
+tar xzf $REGISTRY_HOME/provision/coredx/$COREDX_PKG -C /opt/coredx/
 
 # Java
 echo
