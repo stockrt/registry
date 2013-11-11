@@ -14,7 +14,7 @@ fi
 
 # Config
 echo
-echo "- Configurando sistema..."
+echo "- Configurando..."
 CORE_VERSION="3.5.16"
 PLAY_VERSION="2.2.0"
 REGISTRY_HOME=${REGISTRY_HOME:-"/vagrant"}
