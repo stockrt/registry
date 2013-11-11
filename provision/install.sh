@@ -120,7 +120,7 @@ echo -n "- Executando rc.local..."
 
 # Message
 echo
-echo "- Aguarde enquanto são executados:
+echo "- Por favor aguarde enquanto são executados:
     - Gateway
     - Registry (Core Server e Web Server)
     - Migração do banco de dados
