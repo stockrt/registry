@@ -21,10 +21,10 @@ popd
 
 pushd ../Registry
 echo
-echo "- Versão do java:"
+echo "- Versão do comando java:"
 java -version
 echo
-echo "- Versão do javac:"
+echo "- Versão do comando javac:"
 javac -version
 echo
 echo "- Preparando o projeto para importar no Eclipse."
