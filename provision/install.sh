@@ -122,7 +122,7 @@ echo -n "- Executando rc.local..."
 echo
 echo "- Aguarde enquanto são executados:
     - Gateway
-    - Registry (Web Server e Core Server)
+    - Registry (Core Server e Web Server)
     - Migração do banco de dados
 E então tente acessar: http://registry.vm"
 
